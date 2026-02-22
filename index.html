@@ -936,7 +936,7 @@
       // Tab 1: brokerage config  (columns: key, value)
       // Tab 2: listings          (columns: id, name, year, type, length, berths, price, location, days_listed, image_url, is_stale, badge)
       configSheetUrl: 'https://docs.google.com/spreadsheets/d/147ZlW0m0cY319PsTQ6_9EMk-pyYXgdX9b-rj0v6LDCU/export?format=csv&gid=1100169763',
-      listingsSheetUrl: 'https://docs.google.com/spreadsheets/d/1pg3XMgOZ_efT8QuYzqZSQ9Bo2tYTWpAs/export?format=csv&gid=2003131534',
+      listingsSheetUrl: 'https://docs.google.com/spreadsheets/d/1pg3XMgOZ_efT8QuYzqZSQ9Bo2tYTWpAs/export?format=csv&gid=1342774483',
 
       // n8n webhook — fires when enquiry form is submitted
       webhookUrl: 'https://sailshiftai.app.n8n.cloud/webhook-test/d6cbea19-bd89-4313-950a-020215c36f7d',
@@ -1101,12 +1101,64 @@
     function parseCsvToArray(csv) {
       const lines = csv.trim().split('\n');
       const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-      return lines.slice(1).map(line => {
+      return lines.slice(1).map((line, idx) => {
         const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
         const obj = {};
         headers.forEach((h, i) => obj[h] = vals[i] || '');
+
+        // Normalise scraper columns to site schema
+        const make  = obj.make  || '';
+        const model = obj.model || '';
+        obj.id          = `REF${String(idx + 1).padStart(3, '0')}`;
+        obj.name        = `${make} ${model}`.trim();
+        obj.year        = obj.year || '';
+        obj.type        = inferType(make);
+        obj.length      = obj.length || '';
+        obj.berths      = obj.berths || '';
+        obj.location    = extractLocation(obj.dealer_url || '');
+        obj.days_listed = obj.days_listed || '';
+        obj.image_url   = getImage(make, model);
+        obj.badge       = obj.badge || null;
+
         return obj;
       });
+    }
+
+    function inferType(make) {
+      const motorMakes = ['sunseeker','princess','fairline','bayliner','sea ray','grand',
+                          'sealine','rio','ribeye','viking','riviera','azimut','ferretti',
+                          'riva','cranchi','colecraft','linssen','bavaria motor'];
+      const m = (make || '').toLowerCase();
+      return motorMakes.some(k => m.includes(k)) ? 'motor' : 'sail';
+    }
+
+    function extractLocation(url) {
+      try {
+        const u = new URL(url);
+        return u.searchParams.get('location') || 'United Kingdom';
+      } catch {
+        return 'United Kingdom';
+      }
+    }
+
+    function getImage(make, model) {
+      const m = (make + ' ' + model).toLowerCase();
+      const map = [
+        { keys: ['bavaria'],     url: 'https://images.unsplash.com/photo-1566933293069-b55c7f326dd4?w=800&q=75' },
+        { keys: ['beneteau'],    url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75' },
+        { keys: ['jeanneau'],    url: 'https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=75' },
+        { keys: ['hallberg'],    url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=75' },
+        { keys: ['sunseeker','princess','fairline','sealine','grand','riviera'],
+                                 url: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=75' },
+        { keys: ['viking','colecraft','linssen','widebeam','narrowboat'],
+                                 url: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=75' },
+        { keys: ['rival','lochin','evans'],
+                                 url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=75' },
+      ];
+      for (const entry of map) {
+        if (entry.keys.some(k => m.includes(k))) return entry.url;
+      }
+      return 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75';
     }
 
     // ─────────────────────────────────────────────
