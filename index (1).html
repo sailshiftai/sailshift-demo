@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coastal Marine — Premium Yacht Brokerage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── DESIGN TOKENS (overridden dynamically per brokerage) ── */
+    :root {
+      --accent:       #1a3a5c;
+      --accent-light: #2a5a8c;
+      --gold:         #c9a84c;
+      --bg:           #f7f5f1;
+      --surface:      #ffffff;
+      --text:         #1c1c1c;
+      --muted:        #6b7280;
+      --border:       #e2ddd6;
+      --brokerage-name: "Coastal Marine";
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(247, 245, 241, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white !important;
+      padding: 10px 24px;
+      border-radius: 2px;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--accent-light) !important; color: white !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 72px 48px 0;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, var(--accent) 0%, transparent 60%),
+        url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1800&q=80') center/cover no-repeat;
+      opacity: 0.12;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--accent);
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 480px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 14px 32px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    .btn-ghost {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.2s;
+    }
+
+    .btn-ghost:hover { gap: 12px; }
+
+    .hero-stats {
+      position: absolute;
+      right: 48px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      z-index: 1;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+
+    .stat {
+      text-align: right;
+      border-right: 2px solid var(--gold);
+      padding-right: 20px;
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── LISTINGS SECTION ── */
+    .listings-section {
+      padding: 100px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 56px;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .listings-filter {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      padding: 8px 20px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* ── LISTINGS GRID ── */
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .listing-card {
+      background: var(--surface);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.6s ease both;
+      position: relative;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+
+    .listing-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+      background: var(--border);
+    }
+
+    .listing-card:hover .listing-img { transform: scale(1.03); }
+
+    .listing-img-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .listing-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 1px;
+    }
+
+    .listing-badge.stale {
+      background: #c0392b;
+    }
+
+    .listing-days {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.6);
+      color: rgba(255,255,255,0.85);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 1px;
+    }
+
+    .listing-body {
+      padding: 24px 28px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .listing-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--accent);
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .listing-sub {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+    }
+
+    .listing-specs {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .spec-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .listing-footer {
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .listing-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .listing-location {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .listing-location::before {
+      content: '◉';
+      font-size: 9px;
+      color: var(--gold);
+    }
+
+    .enquire-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 20px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .enquire-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* ── ENQUIRY MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 35, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      margin: 20px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 36px 40px 24px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .modal-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      color: var(--muted);
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body {
+      padding: 32px 40px 40px;
+    }
+
+    .modal-listing-ref {
+      background: var(--bg);
+      border-left: 3px solid var(--gold);
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .modal-listing-ref strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+      background: white;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-submit {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .form-submit:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 12px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 60px 40px;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 28px;
+    }
+
+    .success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .success-msg {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--accent);
+      color: rgba(255,255,255,0.6);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .footer-logo span { color: var(--gold); }
+
+    .footer-tagline {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      margin-top: 6px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-note {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* ── LOADING STATE ── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader {
+      text-align: center;
+    }
+
+    .loader-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .loader-bar {
+      width: 200px;
+      height: 2px;
+      background: var(--border);
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+
+    .loader-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      animation: loadBar 1.8s ease forwards;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes loadBar {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .listings-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .listings-section { padding: 60px 24px; }
+      .listings-grid { grid-template-columns: 1fr; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      footer { flex-direction: column; gap: 24px; text-align: center; padding: 36px 24px; }
+      .footer-note { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">
+      <div class="loader-logo">Coastal Marine</div>
+      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo" id="navLogo">Coastal <span>Marine</span></a>
+    <ul class="nav-links">
+      <li><a href="#listings">Listings</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#" onclick="openEnquiry(null); return false;" class="nav-cta">Enquire Now</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Premium Yacht Brokerage · Est. 2008</div>
+      <h1>Find Your <em>Perfect</em><br>Vessel</h1>
+      <p>We represent exceptional sailing and motor yachts across the UK and Europe. Every enquiry answered, every buyer taken seriously.</p>
+      <div class="hero-actions">
+        <a href="#listings" class="btn-primary">View Current Listings</a>
+        <a href="#" class="btn-ghost" onclick="openEnquiry(null); return false;">
+          Speak to a Broker
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" id="statListings">—</div>
+        <div class="stat-label">Active Listings</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">16</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">£0</div>
+        <div class="stat-label">Buyer's Commission</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTINGS -->
+  <section class="listings-section" id="listings">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Currently Available</div>
+        <h2 class="section-title">Featured Vessels</h2>
+      </div>
+      <div class="listings-filter">
+        <button class="filter-btn active" onclick="filterListings('all', this)">All</button>
+        <button class="filter-btn" onclick="filterListings('sail', this)">Sail</button>
+        <button class="filter-btn" onclick="filterListings('motor', this)">Motor</button>
+      </div>
+    </div>
+    <div class="listings-grid" id="listingsGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <div class="footer-logo" id="footerLogo">Coastal <span>Marine</span></div>
+      <div class="footer-tagline">Premium Yacht Brokerage · United Kingdom</div>
+    </div>
+    <div class="footer-note">
+      All enquiries responded to within 2 hours<br>
+      <span style="color: rgba(255,255,255,0.25); font-size:10px;">Demo powered by SailShift AI</span>
+    </div>
+  </footer>
+
+  <!-- ENQUIRY MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <div id="formState">
+        <div class="modal-header">
+          <div class="modal-eyebrow">Make an Enquiry</div>
+          <h3 class="modal-title" id="modalTitle">Enquire About This Vessel</h3>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-listing-ref" id="modalListingRef" style="display:none">
+            Enquiring about: <strong id="modalListingName"></strong>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" id="firstName" placeholder="John" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" id="lastName" placeholder="Smith" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="email" placeholder="john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label>Mobile Number *</label>
+            <input type="tel" id="phone" placeholder="+44 7700 000000" required />
+          </div>
+          <div class="form-group">
+            <label>Budget Range</label>
+            <select id="budget">
+              <option value="">Select budget range</option>
+              <option>Under £50,000</option>
+              <option>£50,000 – £100,000</option>
+              <option>£100,000 – £200,000</option>
+              <option>£200,000 – £350,000</option>
+              <option>£350,000 – £500,000</option>
+              <option>Over £500,000</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Your Message</label>
+            <textarea id="message" placeholder="Tell us a little about what you're looking for — intended use, experience level, any specific requirements..."></textarea>
+          </div>
+          <button class="form-submit" id="submitBtn" onclick="submitEnquiry()">Send Enquiry</button>
+          <p class="form-note">We respond to every enquiry personally, usually within the hour.</p>
+        </div>
+      </div>
+      <div class="success-state" id="successState">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Enquiry Received</div>
+        <p class="success-msg" id="successMsg">Thank you — a member of our team will be in touch shortly. Keep an eye on your phone.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────
+    // CONFIGURATION
+    // Replace SHEET_ID with your published Google Sheet ID
+    // Sheet must be published as CSV (File → Share → Publish to web → CSV)
+    // ─────────────────────────────────────────────
+
+    const CONFIG = {
+      // Google Sheets published CSV URLs
+      // Tab 1: brokerage config  (columns: key, value)
+      // Tab 2: listings          (columns: id, name, year, type, length, berths, price, location, days_listed, image_url, is_stale, badge)
+      configSheetUrl: 'https://docs.google.com/spreadsheets/d/147ZlW0m0cY319PsTQ6_9EMk-pyYXgdX9b-rj0v6LDCU/export?format=csv&gid=1100169763',
+      listingsSheetUrl: 'https://docs.google.com/spreadsheets/d/1pg3XMgOZ_efT8QuYzqZSQ9Bo2tYTWpAs/export?format=csv&gid=1342774483',
+
+      // n8n webhook — fires when enquiry form is submitted
+      webhookUrl: 'https://sailshiftai.app.n8n.cloud/webhook-test/d6cbea19-bd89-4313-950a-020215c36f7d',
+
+      // Fallback: use hardcoded demo data if sheets not yet configured
+      useDemoData: false
+    };
+
+    // ─────────────────────────────────────────────
+    // DEMO DATA (used when useDemoData: true)
+    // ─────────────────────────────────────────────
+    const DEMO_CONFIG = {
+      brokerageName: 'Coastal Marine',
+      tagline: 'Premium Yacht Brokerage · Est. 2008',
+      accentColor: '#1a3a5c',
+      accentLight: '#2a5a8c',
+      goldColor: '#c9a84c',
+      location: 'Hamble Point, Hampshire'
+    };
+
+    const DEMO_LISTINGS = [
+      {
+        id: 'CM001',
+        name: 'Beneteau Oceanis 50.1',
+        year: 2019,
+        type: 'sail',
+        length: '50ft',
+        berths: 6,
+        price: '£289,000',
+        location: 'Hamble, Hampshire',
+        days_listed: 14,
+        image_url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75',
+        badge: 'New In'
+      },
+      {
+        id: 'CM002',
+        name: 'Bavaria C45',
+        year: 2017,
+        type: 'sail',
+        length: '45ft',
+        berths: 5,
+        price: '£179,500',
+        location: 'Lymington, Hampshire',
+        days_listed: 94,
+        image_url: 'https://images.unsplash.com/photo-1566933293069-b55c7f326dd4?w=800&q=75',
+        badge: 'Price Reduced'
+      },
+      {
+        id: 'CM003',
+        name: 'Sunseeker Predator 57',
+        year: 2016,
+        type: 'motor',
+        length: '57ft',
+        berths: 4,
+        price: '£395,000',
+        location: 'Poole, Dorset',
+        days_listed: 31,
+        image_url: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=75',
+        badge: null
+      },
+      {
+        id: 'CM004',
+        name: 'Jeanneau Sun Odyssey 440',
+        year: 2020,
+        type: 'sail',
+        length: '44ft',
+        berths: 4,
+        price: '£215,000',
+        location: 'Brighton Marina, East Sussex',
+        days_listed: 8,
+        image_url: 'https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=75',
+        badge: 'New In'
+      },
+      {
+        id: 'CM005',
+        name: 'Princess V52',
+        year: 2015,
+        type: 'motor',
+        length: '52ft',
+        berths: 3,
+        price: '£298,000',
+        location: 'Plymouth, Devon',
+        days_listed: 67,
+        image_url: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=75',
+        badge: null
+      },
+      {
+        id: 'CM006',
+        name: 'Hallberg-Rassy 44',
+        year: 2014,
+        type: 'sail',
+        length: '44ft',
+        berths: 6,
+        price: '£259,000',
+        location: 'Falmouth, Cornwall',
+        days_listed: 112,
+        image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=75',
+        badge: 'Must Sell'
+      }
+    ];
+
+    // ─────────────────────────────────────────────
+    // STATE
+    // ─────────────────────────────────────────────
+    let allListings = [];
+    let activeFilter = 'all';
+    let selectedListing = null;
+
+    // ─────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────
+    window.addEventListener('load', async () => {
+      if (CONFIG.useDemoData) {
+        applyConfig(DEMO_CONFIG);
+        renderListings(DEMO_LISTINGS);
+        allListings = DEMO_LISTINGS;
+      } else {
+        await loadFromSheets();
+      }
+
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      }, 1800);
+    });
+
+    // ─────────────────────────────────────────────
+    // GOOGLE SHEETS LOADER
+    // ─────────────────────────────────────────────
+    async function loadFromSheets() {
+      try {
+        const [cfgRes, lstRes] = await Promise.all([
+          fetch(CONFIG.configSheetUrl),
+          fetch(CONFIG.listingsSheetUrl)
+        ]);
+        const cfgCsv = await cfgRes.text();
+        const lstCsv = await lstRes.text();
+
+        const config = parseCsvToObject(cfgCsv);
+        const listings = parseCsvToArray(lstCsv);
+
+        applyConfig(config);
+        renderListings(listings);
+        allListings = listings;
+      } catch (e) {
+        console.warn('Sheet load failed, using demo data:', e);
+        applyConfig(DEMO_CONFIG);
+        renderListings(DEMO_LISTINGS);
+        allListings = DEMO_LISTINGS;
+      }
+    }
+
+    function parseCsvToObject(csv) {
+      const lines = csv.trim().split('\n').slice(1);
+      const obj = {};
+      lines.forEach(line => {
+        const [key, ...rest] = line.split(',');
+        obj[key?.trim()] = rest.join(',').replace(/^"|"$/g, '').trim();
+      });
+      return obj;
+    }
+
+    function parseCsvToArray(csv) {
+      const lines = csv.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+      return lines.slice(1).map((line, idx) => {
+        const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = vals[i] || '');
+
+        // Normalise scraper columns to site schema
+        const make  = obj.make  || '';
+        const model = obj.model || '';
+        obj.id          = `REF${String(idx + 1).padStart(3, '0')}`;
+        obj.name        = `${make} ${model}`.trim();
+        obj.year        = obj.year || '';
+        obj.type        = inferType(make);
+        obj.length      = obj.length || '';
+        obj.berths      = obj.berths || '';
+        obj.location    = extractLocation(obj.dealer_url || '');
+        obj.days_listed = obj.days_listed || '';
+        obj.image_url   = getImage(make, model);
+        obj.badge       = obj.badge || null;
+
+        return obj;
+      });
+    }
+
+    function inferType(make) {
+      const motorMakes = ['sunseeker','princess','fairline','bayliner','sea ray','grand',
+                          'sealine','rio','ribeye','viking','riviera','azimut','ferretti',
+                          'riva','cranchi','colecraft','linssen','bavaria motor'];
+      const m = (make || '').toLowerCase();
+      return motorMakes.some(k => m.includes(k)) ? 'motor' : 'sail';
+    }
+
+    function extractLocation(url) {
+      try {
+        const u = new URL(url);
+        return u.searchParams.get('location') || 'United Kingdom';
+      } catch {
+        return 'United Kingdom';
+      }
+    }
+
+    function getImage(make, model) {
+      const m = (make + ' ' + model).toLowerCase();
+      const map = [
+        { keys: ['bavaria'],     url: 'https://images.unsplash.com/photo-1566933293069-b55c7f326dd4?w=800&q=75' },
+        { keys: ['beneteau'],    url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75' },
+        { keys: ['jeanneau'],    url: 'https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=75' },
+        { keys: ['hallberg'],    url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=75' },
+        { keys: ['sunseeker','princess','fairline','sealine','grand','riviera'],
+                                 url: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=75' },
+        { keys: ['viking','colecraft','linssen','widebeam','narrowboat'],
+                                 url: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=75' },
+        { keys: ['rival','lochin','evans'],
+                                 url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=75' },
+      ];
+      for (const entry of map) {
+        if (entry.keys.some(k => m.includes(k))) return entry.url;
+      }
+      return 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75';
+    }
+
+    // ─────────────────────────────────────────────
+    // APPLY BROKERAGE CONFIG (colours, name)
+    // ─────────────────────────────────────────────
+    function applyConfig(cfg) {
+      const root = document.documentElement;
+      if (cfg.accentColor)  root.style.setProperty('--accent', cfg.accentColor);
+      if (cfg.accentLight)  root.style.setProperty('--accent-light', cfg.accentLight);
+      if (cfg.goldColor)    root.style.setProperty('--gold', cfg.goldColor);
+
+      const name = cfg.brokerageName || 'Coastal Marine';
+      const parts = name.split(' ');
+      const first = parts.slice(0, -1).join(' ') || name;
+      const last = parts.length > 1 ? parts[parts.length - 1] : '';
+
+      document.title = `${name} — Premium Yacht Brokerage`;
+      document.getElementById('navLogo').innerHTML = `${first} <span>${last}</span>`;
+      document.getElementById('footerLogo').innerHTML = `${first} <span>${last}</span>`;
+      document.querySelector('.loader-logo').textContent = name;
+    }
+
+    // ─────────────────────────────────────────────
+    // RENDER LISTINGS
+    // ─────────────────────────────────────────────
+    function renderListings(listings) {
+      const grid = document.getElementById('listingsGrid');
+      document.getElementById('statListings').textContent = listings.length;
+
+      grid.innerHTML = listings.map((l, i) => {
+        const isStale = parseInt(l.days_listed) >= 90;
+        const badgeHtml = l.badge
+          ? `<div class="listing-badge ${isStale ? 'stale' : ''}">${l.badge}</div>`
+          : isStale ? `<div class="listing-badge stale">Long Listed</div>` : '';
+
+        const daysHtml = l.days_listed
+          ? `<div class="listing-days">${l.days_listed}d listed</div>`
+          : '';
+
+        return `
+          <div class="listing-card" data-type="${l.type || 'sail'}" data-id="${l.id}"
+               style="animation-delay: ${i * 0.08}s">
+            <div class="listing-img-wrap">
+              <img class="listing-img" src="${l.image_url}" alt="${l.name}" loading="lazy"
+                   onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=75'" />
+              ${badgeHtml}
+              ${daysHtml}
+            </div>
+            <div class="listing-body">
+              <div class="listing-name">${l.name}</div>
+              <div class="listing-sub">${l.year} · Ref: ${l.id}</div>
+              <div class="listing-specs">
+                <div class="spec-item">
+                  <span class="spec-label">Length</span>
+                  <span class="spec-value">${l.length || '—'}</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Berths</span>
+                  <span class="spec-value">${l.berths || '—'}</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Type</span>
+                  <span class="spec-value" style="text-transform: capitalize">${l.type || 'Sail'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div>
+                <div class="listing-price">${l.price}</div>
+                <div class="listing-location">${l.location}</div>
+              </div>
+              <button class="enquire-btn" onclick="openEnquiry('${l.id}')">Enquire</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ─────────────────────────────────────────────
+    // FILTER
+    // ─────────────────────────────────────────────
+    function filterListings(type, btn) {
+      activeFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.listing-card').forEach(card => {
+        const show = type === 'all' || card.dataset.type === type;
+        card.style.display = show ? 'block' : 'none';
+      });
+    }
+
+    // ─────────────────────────────────────────────
+    // MODAL
+    // ─────────────────────────────────────────────
+    function openEnquiry(listingId) {
+      const overlay = document.getElementById('modalOverlay');
+      const ref = document.getElementById('modalListingRef');
+      const nameEl = document.getElementById('modalListingName');
+      const titleEl = document.getElementById('modalTitle');
+
+      // Reset
+      document.getElementById('formState').style.display = 'block';
+      document.getElementById('successState').style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('submitBtn').textContent = 'Send Enquiry';
+
+      if (listingId) {
+        selectedListing = allListings.find(l => l.id === listingId) || null;
+        if (selectedListing) {
+          ref.style.display = 'block';
+          nameEl.textContent = `${selectedListing.name} — ${selectedListing.price}`;
+          titleEl.textContent = `Enquire About This Vessel`;
+        }
+      } else {
+        selectedListing = null;
+        ref.style.display = 'none';
+        titleEl.textContent = 'Get In Touch';
+      }
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    // ─────────────────────────────────────────────
+    // SUBMIT ENQUIRY → n8n WEBHOOK
+    // ─────────────────────────────────────────────
+    async function submitEnquiry() {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName  = document.getElementById('lastName').value.trim();
+      const email     = document.getElementById('email').value.trim();
+      const phone     = document.getElementById('phone').value.trim();
+      const budget    = document.getElementById('budget').value;
+      const message   = document.getElementById('message').value.trim();
+
+      if (!firstName || !email || !phone) {
+        alert('Please fill in your name, email, and mobile number.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      const payload = {
+        timestamp: new Date().toISOString(),
+        source: 'demo_website',
+        lead: {
+          firstName,
+          lastName,
+          fullName: `${firstName} ${lastName}`,
+          email,
+          phone,
+          budget,
+          message
+        },
+        listing: selectedListing ? {
+          id: selectedListing.id,
+          name: selectedListing.name,
+          price: selectedListing.price,
+          type: selectedListing.type,
+          year: selectedListing.year,
+          location: selectedListing.location,
+          days_listed: selectedListing.days_listed
+        } : null,
+        brokerage: document.getElementById('navLogo').textContent
+      };
+
+      try {
+        if (CONFIG.webhookUrl && CONFIG.webhookUrl !== 'YOUR_N8N_WEBHOOK_URL') {
+          await fetch(CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          // Demo mode — simulate network delay
+          await new Promise(r => setTimeout(r, 1200));
+          console.log('Demo mode — would send to n8n:', payload);
+        }
+
+        // Show success
+        document.getElementById('formState').style.display = 'none';
+        const success = document.getElementById('successState');
+        success.style.display = 'block';
+        document.getElementById('successMsg').textContent =
+          `Thank you ${firstName} — we've received your enquiry${selectedListing ? ` about the ${selectedListing.name}` : ''} and will be in touch on ${phone} very shortly.`;
+
+      } catch (err) {
+        console.error('Submission error:', err);
+        btn.disabled = false;
+        btn.textContent = 'Send Enquiry';
+        alert('Something went wrong. Please try again.');
+      }
+    }
+
+    // Keyboard close
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>
